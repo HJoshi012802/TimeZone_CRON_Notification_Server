@@ -9,23 +9,89 @@ dotenv.config();
 
 const filemanager = {
   type: "service_account",
-  project_id: process.env.PROJECT_ID,
-  private_key_id: process.env.PRIVATE_KEY_ID,
-  private_key: process.env.PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
-  client_email: process.env.CLIENT_EMAIL,
-  client_id: process.env.CLIENT_ID,
+  project_id: process.env.FILE_MANAGER_PROJECT_ID,
+  private_key_id: process.env.FILE_MANAGER_PRIVATE_KEY_ID,
+  private_key: process.env.FILE_MANAGER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.FILE_MANAGER_CLIENT_EMAIL,
+  client_id: process.env.FILE_MANAGER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
   token_uri: process.env.TOKEN_URI,
   auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
-  client_x509_cert_url: process.env.CLIENT_CERT_URL,
+  client_x509_cert_url: process.env.FILE_MANAGER_CLIENT_CERT_URL,
   universe_domain: process.env.UNIVERSE_DOMAIN,
 };
 
-// const serviceAccount = require("./filemanager-70e56-firebase-adminsdk-c0a3x-922a9320da.json");
+const videoplayer = {
+  type: "service_account",
+  project_id: process.env.VIDEO_PLAYER_PROJECT_ID,
+  private_key_id: process.env.VIDEO_PLAYER_PRIVATE_KEY_ID,
+  private_key: process.env.VIDEO_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.VIDEO_PLAYER_CLIENT_EMAIL,
+  client_id: process.env.VIDEO_PLAYER_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.VIDEO_PLAYER_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+};
 
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount)
-//   });
+const ZxFileManager = {
+  type: "service_account",
+  project_id: process.env.ZX_FILE_MANAGER_PROJECT_ID,
+  private_key_id: process.env.ZX_FILE_MANAGER_PRIVATE_KEY_ID,
+  private_key: process.env.ZX_FILE_MANAGER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.ZX_FILE_MANAGER_CLIENT_EMAIL,
+  client_id: process.env.ZX_FILE_MANAGER_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.ZX_FILE_MANAGER_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+};
+
+const LightVideoPlayer = {
+  type: "service_account",
+  project_id: process.env.LIGHT_VIDEO_PLAYER_PROJECT_ID,
+  private_key_id: process.env.LIGHT_VIDEO_PLAYER_PRIVATE_KEY_ID,
+  private_key: process.env.LIGHT_VIDEO_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.LIGHT_VIDEO_PLAYER_CLIENT_EMAIL,
+  client_id: process.env.LIGHT_VIDEO_PLAYER_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.LIGHT_VIDEO_PLAYER_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+};
+
+
+const MusicPlayer = {
+  type: "service_account",
+  project_id: process.env.MUSIC_PLAYER_PROJECT_ID,
+  private_key_id: process.env.MUSIC_PLAYER_PRIVATE_KEY_ID,
+  private_key: process.env.MUSIC_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.MUSIC_PLAYER_CLIENT_EMAIL,
+  client_id: process.env.MUSIC_PLAYER_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.MUSIC_PLAYER_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+};
+
+const vpn = {
+  type: "service_account",
+  project_id: process.env.VPN_PROJECT_ID,
+  private_key_id: process.env.VPN_PRIVATE_KEY_ID,
+  private_key: process.env.VPN_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  client_email: process.env.VPN_CLIENT_EMAIL,
+  client_id: process.env.VPN_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.VPN_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+};
+
 
   async function getAccessToken() {
     try {
