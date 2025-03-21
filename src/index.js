@@ -93,9 +93,11 @@ const vpn = {
 };
 
 
-  async function getAccessToken() {
+  async function getAccessToken(project) {
+    console.log('Token Gen Variables:', project);
     try {
-      const token = await admin.credential.cert(filemanager).getAccessToken();
+      const token = await admin.credential.cert(project).getAccessToken();
+
       // console.log('Token:', token.access_token);
       return token.access_token;
     } catch (error) {
@@ -118,18 +120,37 @@ app.get('/', (req, res) => {
 
 
 app.post("/notification-Scheduler", async(req, res) => {
-const {message, project,scheduler,timezone} = req.body;
+const {message, projectid,scheduler,timezone,project} = req.body;
 const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} *`;
   
 console.log(cron_string);
 
-const url = `https://fcm.googleapis.com/v1/projects/${project}/messages:send`;
+const url = `https://fcm.googleapis.com/v1/projects/${projectid}/messages:send`;
+
+const projects = {
+  filemanager,
+  videoplayer,
+  ZxFileManager,
+  LightVideoPlayer,
+  MusicPlayer,
+  vpn
+};
+
+if (!projects[project]) {
+  return res.status(400).json({ error: "Invalid project name provided." });
+}
+
+// try{
+//   const accessToken = await getAccessToken(projects[project]);
+// }catch(error){
+//   console.error('Error getting token:', error);
+// }
 
 cron.schedule(cron_string ,async()=>{
   console.log("Triggered")
   try {
-    const accessToken = await getAccessToken();
-    console.log(accessToken);
+    const accessToken = await getAccessToken(projects[project]);
+
     const response = await axios.post(
         url,
         { message },
