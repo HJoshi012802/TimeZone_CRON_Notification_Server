@@ -12,15 +12,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'echo Teri maa ka bhosada Build Docker Image'
-                sh 'docker build -t Notification-Cron:${BUILD_NUMBER} -t Notification-Cron:latest .'
+                sh 'docker build -t notification-cron:${BUILD_NUMBER} -t notification-cron:latest .'
             }
         }
         
         stage('Deploy') {
             steps {
-               sh 'docker stop Notification-Cron || true'
-               sh 'docker rm Notification-Cron || true'
-               sh 'docker run -d --name Notification-Cron -p 2025:2025 Notification-Cron:latest'
+               sh 'docker stop notification-cron || true'
+               sh 'docker rm notification-cron || true'
+               sh 'docker run -d --name notification-cron -p 2025:2025 notification-cron:latest'
             }
         }
     }
