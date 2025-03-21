@@ -11,7 +11,7 @@ const filemanager = {
   type: "service_account",
   project_id: process.env.FILE_MANAGER_PROJECT_ID,
   private_key_id: process.env.FILE_MANAGER_PRIVATE_KEY_ID,
-  private_key: process.env.FILE_MANAGER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.FILE_MANAGER_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.FILE_MANAGER_CLIENT_EMAIL,
   client_id: process.env.FILE_MANAGER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -25,7 +25,7 @@ const videoplayer = {
   type: "service_account",
   project_id: process.env.VIDEO_PLAYER_PROJECT_ID,
   private_key_id: process.env.VIDEO_PLAYER_PRIVATE_KEY_ID,
-  private_key: process.env.VIDEO_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.VIDEO_PLAYER_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.VIDEO_PLAYER_CLIENT_EMAIL,
   client_id: process.env.VIDEO_PLAYER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -39,7 +39,7 @@ const ZxFileManager = {
   type: "service_account",
   project_id: process.env.ZX_FILE_MANAGER_PROJECT_ID,
   private_key_id: process.env.ZX_FILE_MANAGER_PRIVATE_KEY_ID,
-  private_key: process.env.ZX_FILE_MANAGER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.ZX_FILE_MANAGER_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.ZX_FILE_MANAGER_CLIENT_EMAIL,
   client_id: process.env.ZX_FILE_MANAGER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -53,7 +53,7 @@ const LightVideoPlayer = {
   type: "service_account",
   project_id: process.env.LIGHT_VIDEO_PLAYER_PROJECT_ID,
   private_key_id: process.env.LIGHT_VIDEO_PLAYER_PRIVATE_KEY_ID,
-  private_key: process.env.LIGHT_VIDEO_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.LIGHT_VIDEO_PLAYER_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.LIGHT_VIDEO_PLAYER_CLIENT_EMAIL,
   client_id: process.env.LIGHT_VIDEO_PLAYER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -68,7 +68,7 @@ const MusicPlayer = {
   type: "service_account",
   project_id: process.env.MUSIC_PLAYER_PROJECT_ID,
   private_key_id: process.env.MUSIC_PLAYER_PRIVATE_KEY_ID,
-  private_key: process.env.MUSIC_PLAYER_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.MUSIC_PLAYER_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.MUSIC_PLAYER_CLIENT_EMAIL,
   client_id: process.env.MUSIC_PLAYER_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
@@ -82,7 +82,7 @@ const vpn = {
   type: "service_account",
   project_id: process.env.VPN_PROJECT_ID,
   private_key_id: process.env.VPN_PRIVATE_KEY_ID,
-  private_key: process.env.VPN_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix new line issue
+  private_key: process.env.VPN_PRIVATE_KEY, // Fix new line issue
   client_email: process.env.VPN_CLIENT_EMAIL,
   client_id: process.env.VPN_CLIENT_ID,
   auth_uri: process.env.AUTH_URI,
