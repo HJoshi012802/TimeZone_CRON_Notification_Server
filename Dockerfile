@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 2025
 
-CMD ["npm", "start:prod"]
+CMD ["npm", "run" ,"start:prod"]
