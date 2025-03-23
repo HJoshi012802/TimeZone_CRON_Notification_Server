@@ -118,6 +118,10 @@ app.get('/', (req, res) => {
 });
 
 
+app.get('/cross-app-promotion', (req, res) => {
+  res.status(200).send('cross-app-promotion Json Ready to Deploy');
+});
+
 
 app.post("/notification-Scheduler", async(req, res) => {
 const {message, projectid,scheduler,timezone,project} = req.body;
