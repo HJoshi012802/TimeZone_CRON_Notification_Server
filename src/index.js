@@ -94,14 +94,11 @@ const vpn = {
 
 
   async function getAccessToken(project) {
-    console.log('Token Gen Variables:', project);
     try {
       const token = await admin.credential.cert(project).getAccessToken();
-
-      // console.log('Token:', token.access_token);
       return token.access_token;
     } catch (error) {
-      console.error('Error getting token:', error);
+      console.error('🚫 \x1b[32m Error getting token: \x1b[0m', error);
       throw error;
     }
   }
@@ -112,22 +109,18 @@ const port = 2025;
 
 app.use(bodyParser.json());
 
-
 app.get('/', (req, res) => {
     res.status(200).send('TimeZone Notification Server by Harshit Joshi!');
 });
-
 
 app.get('/cross-app-promotion', (req, res) => {
   res.status(200).send('cross-app-promotion Json Ready to Deploy');
 });
 
-
 app.post("/notification-Scheduler", async(req, res) => {
 const {message, projectid,scheduler,timezone,project} = req.body;
+
 const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} *`;
-  
-console.log(cron_string);
 
 const url = `https://fcm.googleapis.com/v1/projects/${projectid}/messages:send`;
 
@@ -144,14 +137,19 @@ if (!projects[project]) {
   return res.status(400).json({ error: "Invalid project name provided." });
 }
 
-// try{
-//   const accessToken = await getAccessToken(projects[project]);
-// }catch(error){
-//   console.error('Error getting token:', error);
-// }
+try{
+  console.log(`✅ \x1b[33m [server]:SCHEDULER : ${cron_string} \x1b[0m`);
+  console.log(`✅ \x1b[33m [server]:PROJECT : ${projects[project]} \x1b[0m`);
+
+  const accessToken = await getAccessToken(projects[project]);
+
+}catch(error){
+  console.error('🚫 \x1b[32m Error getting token: \x1b[0m', error );
+  return res.status(400).json({ 'Error getting token:': error});
+}
 
 cron.schedule(cron_string ,async()=>{
-  console.log("Triggered")
+  
   try {
     const accessToken = await getAccessToken(projects[project]);
 
@@ -172,7 +170,6 @@ cron.schedule(cron_string ,async()=>{
     });
 } catch (error) {
     console.error("Error sending notification:", error);
-    // Create a simplified error object without circular references
     const errorResponse = {
         message: error.message,
         status: error.response ? error.response.status : 500,
