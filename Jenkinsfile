@@ -13,7 +13,7 @@ pipeline {
                 var1 = credentials("AUTH_URI");
             }
             steps{
-                echo 'Environment setup started -> $var1'
+                sh "echo 'Environment setup started -> $var1'"
             }
         }
         stage('Build Docker Image') {
