@@ -1,17 +1,35 @@
 pipeline {
     agent any
+
+    environment {
+        ENV_FILE_PATH = '.env' 
+    }
+
     
     stages {
         stage('Checkout') {
             steps {
+                sh 'Checkout'
                 checkout scm
-                sh 'echo Teri maa ka bhosada start hogaya '
+
+            }
+        }
+
+        stage('Prepare Enviroment'){
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'SECRET_ENV')]) {
+                        sh '''
+                            cp $SECRET_ENV $ENV_FILE_PATH
+                        '''
+                    }
+                }
             }
         }
         
         stage('Build Docker Image') {
             steps {
-                sh 'echo Teri maa ka bhosada Build Docker Image'
+                sh 'Build Docker Image'
                 sh 'docker build -t notification-cron:${BUILD_NUMBER} -t notification-cron:latest .'
             }
         }
