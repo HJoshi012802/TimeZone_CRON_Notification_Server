@@ -8,7 +8,14 @@ pipeline {
                 sh 'echo Teri maa ka bhosada start hogaya '
             }
         }
-        
+        stage("Environment Setup"){
+            environment{
+                var1 = credentials("AUTH_URI");
+            }
+            steps{
+                sh 'echo Environment setup started -> $var1'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 sh 'echo Teri maa ka bhosada Build Docker Image'
