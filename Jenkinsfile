@@ -5,20 +5,23 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'echo Teri maa ka bhosada start hogaya '
             }
         }
+
         stage("Environment Setup"){
             environment{
                 var1 = credentials("ENV_PRODUCTION");
             }
             steps{
-                sh "echo '$var1'"
+                sh 'Build Docker Image'
+                sh 'touch .env'
+                sh "echo '$var1' > .env "
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                sh 'echo Teri maa ka bhosada Build Docker Image'
+                sh 'Build Docker Image'
                 sh 'docker build -t notification-cron:${BUILD_NUMBER} -t notification-cron:latest .'
             }
         }
@@ -30,7 +33,9 @@ pipeline {
                sh 'docker run -d --name notification-cron -p 2025:2025 notification-cron:latest'
             }
         }
+
     }
+
     post {
         success {
             echo "Deployment successful!"
