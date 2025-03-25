@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        ENV_FILE_PATH = '.env' 
-    }
+    // environment {
+    //     ENV_FILE_PATH = '/.env' 
+    // }
 
     
     stages {
@@ -15,17 +15,17 @@ pipeline {
             }
         }
 
-        stage('Prepare Enviroment'){
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'SECRET_ENV')]) {
-                        sh '''
-                            cp $SECRET_ENV $ENV_FILE_PATH
-                        '''
-                    }
-                }
-            }
-        }
+        // stage('Prepare Enviroment'){
+        //     steps {
+        //         script {
+        //             withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'SECRET_ENV')]) {
+        //                 sh '''
+        //                     cp $SECRET_ENV $ENV_FILE_PATH
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
         
         stage('Build Docker Image') {
             steps {
