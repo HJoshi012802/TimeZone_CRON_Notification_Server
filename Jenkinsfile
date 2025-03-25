@@ -9,14 +9,14 @@ pipeline {
         }
 
         stage("Environment Setup"){
-            environment{
-                var1 = credentials("ENV_PRODUCTION");
-            }
             steps{
-                sh 'Build Docker Image'
-                sh 'touch .env'
-                sh "echo '$var1' > .env "
-            }
+               script {
+                    // Use withCredentials for more secure credential handling
+                    withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'ENV_FILE')]) {
+                        // Copy the entire .env file instead of echoing a single variable
+                        sh 'cp $ENV_FILE .env'
+                    }
+               }
         }
 
         stage('Build Docker Image') {
