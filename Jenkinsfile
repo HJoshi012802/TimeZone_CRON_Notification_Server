@@ -9,19 +9,18 @@ pipeline {
         }
 
         stage("Environment Setup"){
-            steps{
+            steps {
                script {
-                    // Use withCredentials for more secure credential handling
                     withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'ENV_FILE')]) {
                         // Copy the entire .env file instead of echoing a single variable
                         sh 'cp $ENV_FILE .env'
                     }
                }
+            }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'Build Docker Image'
                 sh 'docker build -t notification-cron:${BUILD_NUMBER} -t notification-cron:latest .'
             }
         }
@@ -33,7 +32,6 @@ pipeline {
                sh 'docker run -d --name notification-cron -p 2025:2025 notification-cron:latest'
             }
         }
-
     }
 
     post {
