@@ -10,10 +10,10 @@ pipeline {
         }
         stage("Environment Setup"){
             environment{
-                var1 = credentials("AUTH_URI");
+                var1 = credentials("ENV_PRODUCTION");
             }
             steps{
-                sh "echo 'Environment setup started -> $var1'"
+                sh "echo '$var1'"
             }
         }
         stage('Build Docker Image') {
