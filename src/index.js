@@ -110,7 +110,7 @@ const port = 2025;
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.status(200).send('TimeZone Notification Server by Harshit Joshi!');
+    res.status(200).send('TimeZone Notification Server developed and CI/CDed by Harshit Joshi !!!');
 });
 
 app.get('/cross-app-promotion', (req, res) => {
