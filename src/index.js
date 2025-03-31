@@ -114,7 +114,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/cross-app-promotion', (req, res) => {
-  res.status(200).send.json({
+  res.status(200).json({
     "message": "Success",
     "status": 200,
     "data": [
