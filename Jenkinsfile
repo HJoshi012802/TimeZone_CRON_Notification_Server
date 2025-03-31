@@ -13,7 +13,7 @@ pipeline {
                script {
                     withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'ENV_FILE')]) {
                         // Copy the entire .env file instead of echoing a single variable
-                        sh 'cp $ENV_FILE .env'
+                       sh 'sudo -u jenkins cp $ENV_FILE .env'
                     }
                }
             }
