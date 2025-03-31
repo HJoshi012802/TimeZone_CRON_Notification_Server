@@ -8,12 +8,16 @@ pipeline {
             }
         }
 
-        stage("Environment Setup"){
+        stage("Environment Setup") {
             steps {
                script {
                     withCredentials([file(credentialsId: 'ENV_PRODUCTION', variable: 'ENV_FILE')]) {
+                        // Ensure the .env file exists and has the correct permissions
+                        sh 'touch .env'
+                        sh 'chown jenkins:jenkins .env'
+                        sh 'chmod 664 .env'
+
                         // Copy the entire .env file instead of echoing a single variable
-                        sh ' whoami'
                         sh 'cp $ENV_FILE .env'
                     }
                }
