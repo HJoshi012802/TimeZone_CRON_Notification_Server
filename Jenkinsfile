@@ -34,7 +34,7 @@ pipeline {
             steps {
                sh 'docker stop notification-cron || true'
                sh 'docker rm notification-cron || true'
-               sh 'docker run -d --name notification-cron -p 80:80 notification-cron:latest'
+               sh 'docker run -d --name notification-cron -p 2025:2025 notification-cron:latest'
             }
         }
     }
