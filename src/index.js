@@ -91,8 +91,7 @@ const vpn = {
   client_x509_cert_url: process.env.VPN_CLIENT_CERT_URL,
   universe_domain: process.env.UNIVERSE_DOMAIN,
 };
-
-
+ 
   async function getAccessToken(project) {
     try {
       const token = await admin.credential.cert(project).getAccessToken();
@@ -189,7 +188,7 @@ app.get('/cross-app-promotion', (req, res) => {
 app.post("/notification-Scheduler", async(req, res) => {
 const {message, projectid,scheduler,timezone,project} = req.body;
 
-const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} *`;
+const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} ${scheduler?.week ?? '*'}`;
 
 const url = `https://fcm.googleapis.com/v1/projects/${projectid}/messages:send`;
 
