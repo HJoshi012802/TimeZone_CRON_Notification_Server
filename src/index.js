@@ -4,6 +4,8 @@ const axios = require('axios');
 const admin = require('firebase-admin');
 const node_cron = require("node-cron");
 const dotenv = require("dotenv");
+const cors = require('cors');
+
 // const cronitor = require('cronitor')('a1ef2a270e6c4a0d9150a87b5e7e8322');
 // const eventsApi = require('@slack/events-api');
 const { WebClient, LogLevel } = require("@slack/web-api");
@@ -94,6 +96,20 @@ const vpn = {
   client_x509_cert_url: process.env.VPN_CLIENT_CERT_URL,
   universe_domain: process.env.UNIVERSE_DOMAIN,
 };
+
+const collagemaker ={
+  type: "service_account",
+  project_id: process.env.PHOTO_EDITOR_PROJECT_ID,
+  private_key_id: process.env.PHOTO_EDITOR_PRIVATE_KEY_ID,
+  private_key: process.env.PHOTO_EDITOR_PRIVATE_KEY, // Fix new line issue
+  client_email: process.env.PHOTO_EDITOR_CLIENT_EMAIL,
+  client_id: process.env.PHOTO_EDITOR_CLIENT_ID,
+  auth_uri: process.env.AUTH_URI,
+  token_uri: process.env.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT_URL,
+  client_x509_cert_url: process.env.PHOTO_EDITOR_CLIENT_CERT_URL,
+  universe_domain: process.env.UNIVERSE_DOMAIN,
+}
  
   async function getAccessToken(project) {
     try {
@@ -115,6 +131,11 @@ const app = express();
 
 const port = 2025;
 
+var corsOptions = {
+  origin: '*',
+}
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // cronitor.wraps(node_cron);
@@ -137,7 +158,9 @@ app.get('/', (req, res) => {
 });
 
 app.post("/notification-Scheduler", async(req, res) => {
-  const {message, projectid,scheduler,timezone,project,naughtyfication_name,slack_alert} = req.body;
+  const {message, projectid,scheduler,timezone,project} = req.body;
+
+  console.log(`✅ \x1b[33m [server]:NOTIFICATION-SCHEDULER : ${JSON.stringify(req.body)} \x1b[0m`);
   
   const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} ${scheduler?.week ?? '*'}`;
   
@@ -149,7 +172,8 @@ app.post("/notification-Scheduler", async(req, res) => {
     ZxFileManager,
     LightVideoPlayer,
     MusicPlayer,
-    vpn
+    vpn,
+    collagemaker
   };
   
   if (!projects[project]) {
@@ -186,7 +210,7 @@ app.post("/notification-Scheduler", async(req, res) => {
 
        if (response.status === 200) {
         console.log("✅ Notification sent");
-        await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+        await sendSlackMessage("C092NBGSRLY", `[TEST-Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
       res.status(200).json({
@@ -201,7 +225,7 @@ app.post("/notification-Scheduler", async(req, res) => {
         status: error.response ? error.response.status : 500,
         data: error.response ? error.response.data : null
       };
-      await sendSlackMessage("C092NBGSRLY", `[Server]: ❌ Error sending notification for *${project}*: ${error.message}`);
+      await sendSlackMessage("C092NBGSRLY", `[TEST-Server]: ❌ Error sending notification for *${project}*: ${error.message}`);
       res.status(400).json(errorResponse);
     }
   },{
