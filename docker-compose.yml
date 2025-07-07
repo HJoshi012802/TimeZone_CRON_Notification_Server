@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nodeapp:
+    build: .
+    container_name: nodeapp
+    expose:
+      - "2025"   # Only exposed to internal network
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - nodeapp
