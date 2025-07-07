@@ -120,8 +120,7 @@ const collagemaker ={
       throw error;
     }
   }
-
-// const slackEvents = eventsApi.createEventAdapter(process.env.SIGNING_SECRET);
+  
 const token = process.env.BOT_TOKEN;
 const slackClient = new WebClient(token, {
     logLevel: LogLevel.DEBUG
@@ -137,10 +136,6 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-
-// cronitor.wraps(node_cron);
-
-// app.use('/', slackEvents.expressMiddleware());
 
 async function sendSlackMessage(channel, text) {
   try {
@@ -191,6 +186,8 @@ app.post("/notification-Scheduler", async(req, res) => {
     return res.status(400).json({ 'Error getting token:': error});
   }
   
+   await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+
   node_cron.schedule(cron_string ,async()=>{
   // cronitor.schedule(naughtyfication_name,cron_string ,async()=>{
     
@@ -210,7 +207,7 @@ app.post("/notification-Scheduler", async(req, res) => {
 
        if (response.status === 200) {
         console.log("✅ Notification sent");
-        await sendSlackMessage("C092NBGSRLY", `[TEST-Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+        await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
       res.status(200).json({
@@ -225,7 +222,7 @@ app.post("/notification-Scheduler", async(req, res) => {
         status: error.response ? error.response.status : 500,
         data: error.response ? error.response.data : null
       };
-      await sendSlackMessage("C092NBGSRLY", `[TEST-Server]: ❌ Error sending notification for *${project}*: ${error.message}`);
+      await sendSlackMessage("C092NBGSRLY", `[Server]: ❌ Error sending notification for *${project}*: ${error.message}`);
       res.status(400).json(errorResponse);
     }
   },{
