@@ -130,11 +130,12 @@ const app = express();
 
 const port = 2025;
 
-var corsOptions = {
- origin: '*',
-}
+app.use(cors({
+  origin: 'https://dashboardnotification.web.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 async function sendSlackMessage(channel, text) {
