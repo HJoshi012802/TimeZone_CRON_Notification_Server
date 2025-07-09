@@ -206,16 +206,16 @@ app.post("/notification-Scheduler", async(req, res) => {
         }
       );
 
-       if (response.status === 200) {
+      if (response.status === 200) {
         console.log("✅ Notification sent");
-        await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+        return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         status: response.status,
         statusText: response.statusText,
-        data: response.data
-      });
+        data: response.data});
+
     } catch (error) {
       console.error("Error sending notification:", error);
       const errorResponse = {
@@ -224,13 +224,22 @@ app.post("/notification-Scheduler", async(req, res) => {
         data: error.response ? error.response.data : null
       };
       await sendSlackMessage("C092NBGSRLY", `[Server]: ❌ Error sending notification for *${project}*: ${error.message}`);
-      res.status(400).json(errorResponse);
+      return res.status(400).json(errorResponse);
     }
   },{
     scheduled: true,
     timezone: `${timezone}`
   })
   
+    res.status(200).json({
+      message: "Notification Scheduler is running",
+      status: 200,
+      data: {
+        cron_string,
+        project,
+        timezone
+      }
+    });
 })
 
 app.listen(port, () => {
