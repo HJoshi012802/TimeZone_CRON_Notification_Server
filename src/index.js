@@ -131,9 +131,7 @@ const app = express();
 const port = 2025;
 
 var corsOptions = {
- origin: 'https://dashboardnotification.web.app',
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  credentials: true
+ origin: '*',
 }
 
 app.use(cors(corsOptions));
