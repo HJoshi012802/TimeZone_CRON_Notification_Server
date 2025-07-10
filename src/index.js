@@ -10,7 +10,17 @@ const cors = require('cors');
 // const eventsApi = require('@slack/events-api');
 const { WebClient, LogLevel } = require("@slack/web-api");
 
+
+const port = 2025;
+const app = express();
 dotenv.config(); 
+app.use(bodyParser.json());
+
+app.use(cors({
+  origin: ['https://dashboardnotification.web.app',"http://localhost:5173"],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  // allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const filemanager = {
   type: "service_account",
@@ -122,21 +132,10 @@ const collagemaker ={
   }
   
 const token = process.env.BOT_TOKEN;
+
 const slackClient = new WebClient(token, {
     logLevel: LogLevel.DEBUG
 });
-
-const app = express();
-
-const port = 2025;
-
-app.use(cors({
-  origin: 'https://dashboardnotification.web.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(bodyParser.json());
 
 async function sendSlackMessage(channel, text) {
   try {
@@ -156,7 +155,27 @@ app.get('/', (req, res) => {
 app.post("/notification-Scheduler", async(req, res) => {
   const {message, projectid,scheduler,timezone,project} = req.body;
 
-  console.log(`✅ \x1b[33m [server]:NOTIFICATION-SCHEDULER : ${JSON.stringify(req.body)} \x1b[0m`);
+  if (message && message.data && message.data.data) {
+    const str = "{\"title\":\"Precision Challenge Awaits! 🔨\",\"body\":\"Play and master the challenge! 🎯👊\"}";
+  const messageData = JSON.parse(str);
+  message.data.data = messageData;
+}
+
+const fcmPayload = {
+  message: {
+    data: {
+      data: JSON.stringify(message.data.data) 
+    },
+  }
+};
+
+ if (message.topic !== undefined && message.topic !== "") {
+   fcmPayload.message.topic = message.topic;
+  } else if (message.token !== undefined && message.token !== "") {
+    fcmPayload.message.token = message.token;
+  }
+
+  // console.log(`✅ \x1b[33m [server]:NOTIFICATION-SCHEDULER : ${JSON.stringify(req.body)} \x1b[0m`);
   
   const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} ${scheduler?.week ?? '*'}`;
   
@@ -178,7 +197,7 @@ app.post("/notification-Scheduler", async(req, res) => {
   
   try{
     console.log(`✅ \x1b[33m [server]:SCHEDULER : ${cron_string} \x1b[0m`);
-    console.log(`✅ \x1b[33m [server]:PROJECT : ${projects[project]} \x1b[0m`);
+    // console.log(`✅ \x1b[33m [server]:PROJECT : ${projects[project]} \x1b[0m`);
     
     const accessToken = await getAccessToken(projects[project]);
     
@@ -190,14 +209,13 @@ app.post("/notification-Scheduler", async(req, res) => {
    await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
 
   node_cron.schedule(cron_string ,async()=>{
-  // cronitor.schedule(naughtyfication_name,cron_string ,async()=>{
     
     try {
       const accessToken = await getAccessToken(projects[project]);
       
       const response = await axios.post(
         url,
-        { message },
+        fcmPayload,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -207,14 +225,14 @@ app.post("/notification-Scheduler", async(req, res) => {
       );
 
       if (response.status === 200) {
-        console.log("✅ Notification sent");
+        console.log("✅ Notification sent", response);
         return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
-      return res.status(200).json({
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data});
+      // return res.status(200).json({
+      //   status: response.status,
+      //   statusText: response.statusText,
+      //   data: response.data});
 
     } catch (error) {
       console.error("Error sending notification:", error);
@@ -245,77 +263,3 @@ app.post("/notification-Scheduler", async(req, res) => {
 app.listen(port, () => {
   console.log(`⚡️ \x1b[43m [server]: Server is Fired Up at http://localhost:${port} \x1b[0m`);
 }); 
-
-// app.get('/cross-app-promotion', (req, res) => {
-//   res.status(200).json({
-//     "message": "Success",
-//     "status": 200,
-//     "data": [
-//       {
-//         "app_name": "HD Video Downloader",
-//         "package_name": "com.rocks.video.downloader",
-//         "app_url": "https://play.google.com/store/apps/details?id=com.rocks.video.downloader",
-//         "icon_url": "https://img.rocksplayer.com/img/default/Notification/517493ee-2b37-4008-854c-10dd0ce8c044.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.4 :star: | Free HD Downloader"
-//       },
-//       {
-//         "app_name": "Asd Music Player",
-//         "package_name": "com.rocks.music",
-//         "app_url": "https://tinyurl.com/audio-player",
-//         "icon_url": "https://img.rocksplayer.com/img/default/Notification/64e6a7a2-eb92-4ed9-ad32-5ead27f05103.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.2 :star: | Free Audio player and Radio fm"
-//       },
-//       {
-//         "app_name": "File Manager",
-//         "package_name": "filemanager.files.fileexplorer.android.folder",
-//         "app_url": "https://play.google.com/store/apps/details?id=filemanager.files.fileexplorer.android.folder&referrer=utm_source%3Dcp%26utm_medium%3Dcp_banner%26utm_term%3Dcp_click%26utm_content%3Dbanner_app%26utm_campaign%3DCP_CAMPAIGN",
-//         "icon_url": "https://d3q1stlj95u1cj.cloudfront.net/img/default/app_launcher_icons/filemanager.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.5 :star: | Free Downloader and Clean master "
-//       },
-//       {
-//         "app_name": "Gallery Photo-editor",
-//         "package_name": "com.rocks.photosgallery",
-//         "app_url": "https://tinyurl.com/photo-editor",
-//         "icon_url": "https://img.rocksplayer.com/img/default/app_launcher_icons/gallery.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.4 :star: FREE Stickers, Filters and Neons"
-//       },
-//       {
-//         "app_name": "Asd Mp3 Converter",
-//         "package_name": "mp3converter.videotomp3.ringtonemaker",
-//         "app_url": "https://tinyurl.com/audio-converter",
-//         "icon_url": "https://d3q1stlj95u1cj.cloudfront.net/img/default/app_launcher_icons/mp3_converter.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.3 :star: FREE Cut, split and convert video into mp3. All in one app"
-//       },
-//       {
-//         "app_name": "Radio Monkey: Radio Fm",
-//         "package_name": "radio.fm.mytunner.gaana.liveradio.radiostation.pocketfm",
-//         "app_url": "https://tinyurl.com/radio-monkey",
-//         "icon_url": "https://img.rocksplayer.com/img/default/Notification/a2b96c19-48eb-46fe-921a-6c55e4d8908e.png",
-//         "app_banner_url": "",
-//         "app_detail": "4.5 :star: FREE 5000+ Radio fm stations. Play fm online"
-//       },
-//       {
-//         "app_name": "Find Differences Puzzle",
-//         "package_name": "games.find.diff.gamma",
-//         "app_url": "https://tinyurl.com/find-diff",
-//         "icon_url": "https://d3q1stlj95u1cj.cloudfront.net/img/default/app_launcher_icons/finddiff_game.jpg",
-//         "app_banner_url": "",
-//         "app_detail": "Picture puzzle game for brain storming. Find the differences"
-//       },
-//       {
-//         "app_name": "Edit Photos",
-//         "package_name": "collagemaker.photoeditor.postcreator",
-//         "app_url": "https://play.google.com/store/apps/details?id=collagemaker.photoeditor.postcreator",
-//         "icon_url": "https://img.rocksplayer.com/img/default/Notification/8aee97bd-c9fd-4d61-ae3f-dbe7255ca600.png",
-//         "app_banner_url": "",
-//         "app_detail": "Collage maker Freestyle with Crop, Filter, stickers, effects, and neons"
-//       }
-//     ]
-//   });
-// });
-
