@@ -10,7 +10,6 @@ const cors = require('cors');
 // const eventsApi = require('@slack/events-api');
 const { WebClient, LogLevel } = require("@slack/web-api");
 
-
 const port = 2025;
 const app = express();
 dotenv.config(); 
@@ -155,25 +154,30 @@ app.get('/', (req, res) => {
 app.post("/notification-Scheduler", async(req, res) => {
   const {message, projectid,scheduler,timezone,project} = req.body;
 
-  if (message && message.data && message.data.data) {
-    const str = "{\"title\":\"Precision Challenge Awaits! 🔨\",\"body\":\"Play and master the challenge! 🎯👊\"}";
-  const messageData = JSON.parse(str);
-  message.data.data = messageData;
-}
 
-const fcmPayload = {
-  message: {
-    data: {
-      data: JSON.stringify(message.data.data) 
-    },
-  }
-};
+  // message.data.data = JSON.parse(message.data.data);
+  console.log(message);
+//   if (message && message.data && message.data.data) {
+//   // const str = JSON.stringify(message.data.data);
+//   // const messageData = JSON.parse(str);
+//   message.data.data = 
+// }
 
- if (message.topic !== undefined && message.topic !== "") {
-   fcmPayload.message.topic = message.topic;
-  } else if (message.token !== undefined && message.token !== "") {
-    fcmPayload.message.token = message.token;
-  }
+// const fcmPayload = {
+//   message: {
+//     data: {
+//       data: JSON.stringify(message.data.data) 
+//     },
+//   }
+// };
+
+//  if (message.topic !== undefined && message.topic !== "") {
+//    fcmPayload.message.topic = message.topic;
+//   } else if (message.token !== undefined && message.token !== "") {
+//     fcmPayload.message.token = message.token;
+//   }
+
+  // console.log(fcmPayload);
 
   // console.log(`✅ \x1b[33m [server]:NOTIFICATION-SCHEDULER : ${JSON.stringify(req.body)} \x1b[0m`);
   
@@ -197,7 +201,6 @@ const fcmPayload = {
   
   try{
     console.log(`✅ \x1b[33m [server]:SCHEDULER : ${cron_string} \x1b[0m`);
-    // console.log(`✅ \x1b[33m [server]:PROJECT : ${projects[project]} \x1b[0m`);
     
     const accessToken = await getAccessToken(projects[project]);
     
@@ -206,16 +209,15 @@ const fcmPayload = {
     return res.status(400).json({ 'Error getting token:': error});
   }
   
-   await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
-
+  await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+  
   node_cron.schedule(cron_string ,async()=>{
-    
     try {
       const accessToken = await getAccessToken(projects[project]);
       
       const response = await axios.post(
         url,
-        fcmPayload,
+        {message},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -226,7 +228,7 @@ const fcmPayload = {
 
       if (response.status === 200) {
         console.log("✅ Notification sent", response);
-        return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+       return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
       // return res.status(200).json({
