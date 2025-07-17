@@ -6,8 +6,6 @@ const node_cron = require("node-cron");
 const dotenv = require("dotenv");
 const cors = require('cors');
 
-// const cronitor = require('cronitor')('a1ef2a270e6c4a0d9150a87b5e7e8322');
-// const eventsApi = require('@slack/events-api');
 const { WebClient, LogLevel } = require("@slack/web-api");
 
 const port = 2025;
@@ -18,7 +16,6 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: ['https://dashboardnotification.web.app',"http://localhost:5173"],
   methods: ['GET', 'POST', 'OPTIONS'],
-  // allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const filemanager = {
@@ -154,33 +151,8 @@ app.get('/', (req, res) => {
 app.post("/notification-Scheduler", async(req, res) => {
   const {message, projectid,scheduler,timezone,project} = req.body;
 
-
-  // message.data.data = JSON.parse(message.data.data);
   console.log(message);
-//   if (message && message.data && message.data.data) {
-//   // const str = JSON.stringify(message.data.data);
-//   // const messageData = JSON.parse(str);
-//   message.data.data = 
-// }
 
-// const fcmPayload = {
-//   message: {
-//     data: {
-//       data: JSON.stringify(message.data.data) 
-//     },
-//   }
-// };
-
-//  if (message.topic !== undefined && message.topic !== "") {
-//    fcmPayload.message.topic = message.topic;
-//   } else if (message.token !== undefined && message.token !== "") {
-//     fcmPayload.message.token = message.token;
-//   }
-
-  // console.log(fcmPayload);
-
-  // console.log(`✅ \x1b[33m [server]:NOTIFICATION-SCHEDULER : ${JSON.stringify(req.body)} \x1b[0m`);
-  
   const cron_string = `0 ${scheduler?.minute ?? '*'} ${scheduler?.hour ?? '*'} ${scheduler?.day ?? '*'} ${scheduler?.month ?? '*'} ${scheduler?.week ?? '*'}`;
   
   const url = `https://fcm.googleapis.com/v1/projects/${projectid}/messages:send`;
@@ -209,7 +181,7 @@ app.post("/notification-Scheduler", async(req, res) => {
     return res.status(400).json({ 'Error getting token:': error});
   }
   
-  await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+   await sendSlackMessage("C092NBGSRLY", `[Server]: ⏰📅 Notification Scheduled successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
   
   node_cron.schedule(cron_string ,async()=>{
     try {
@@ -228,13 +200,10 @@ app.post("/notification-Scheduler", async(req, res) => {
 
       if (response.status === 200) {
         console.log("✅ Notification sent", response);
-       return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
+      return await sendSlackMessage("C092NBGSRLY", `[Server]: ✅ Notification sent successfully for *${project}* at ${new Date().toLocaleString("en-IN", { timeZone: timezone })}`);
       }
 
-      // return res.status(200).json({
-      //   status: response.status,
-      //   statusText: response.statusText,
-      //   data: response.data});
+    
 
     } catch (error) {
       console.error("Error sending notification:", error);
